@@ -1,0 +1,43 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  productos:
+    build: ./productos
+    container_name: productos
+    ports:
+      - "8001:8000"
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+  inventario:
+    build: ./inventario
+    container_name: inventario
+    ports:
+      - "8002:8000"
+      - "50051:50051"
+    depends_on:
+      - redis
+
+  ordenes:
+    build: ./ordenes
+    container_name: ordenes
+    ports:
+      - "8000:8000"
+    depends_on:
+      - inventario
+      - rabbitmq
+
+  notificacion:
+    build: ./notificacion
+    container_name: notificacion
+    ports:
+      - "8003:8000"
+    depends_on:
+      - rabbitmq

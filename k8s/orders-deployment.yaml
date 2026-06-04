@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ordenes
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ordenes
+  template:
+    metadata:
+      labels:
+        app: ordenes
+    spec:
+      containers:
+        - name: ordenes
+          image: ordenes:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8000
+
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+
+          livenessProbe:
+            httpGet:
+              path: /conexion
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /conexion
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
