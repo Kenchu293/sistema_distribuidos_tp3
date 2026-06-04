@@ -1,0 +1,34 @@
+name: CI/CD Pipeline
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Levantar microservicios
+        run: docker compose up -d
+
+      - name: Instalar pytest
+        run: pip install pytest
+
+      - name: Ejecutar tests
+        run: pytest tests/ -v
+
+      - name: Apagar servicios
+        if: always()
+        run: docker compose down
