@@ -19,6 +19,9 @@ jobs:
       - name: Levantar microservicios
         run: docker compose up -d
 
+      - name: Instalar dependencias
+        run: pip install pytest requests
+
       - name: Instalar pytest
         run: pip install pytest
 
